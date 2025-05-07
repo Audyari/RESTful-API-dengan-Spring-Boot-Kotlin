@@ -4,6 +4,19 @@
     * https://start.spring.io/
     
 02-Membuat-API-Spec
+03-Konfigurasi-Database-XAMPP aja
+04-Desain-Layer-Aplikasi
+05-Membuat-Create-Product-API
+    1. Entity
+    2. Repository
+    3. service
+    4. controller
+    5. model
+    6. IMPL
+
+06-Membuat-Get-Product-API
+
+
 
 
 
