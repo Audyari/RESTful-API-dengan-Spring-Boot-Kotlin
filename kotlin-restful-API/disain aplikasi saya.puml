@@ -1,7 +1,7 @@
 @startuml
 
 package "src/main/kotlin/programmer/zaman/now/kotlin/restful" {
-    package "entity" {
+    package "1. entity" {
         class Product {
             +id: String
             +name: String
@@ -12,7 +12,7 @@ package "src/main/kotlin/programmer/zaman/now/kotlin/restful" {
         }
     }
 
-    package "model" {
+    package "2. model" {
         class CreateProductRequest {
             +name: String
             +price: Long
@@ -35,13 +35,17 @@ package "src/main/kotlin/programmer/zaman/now/kotlin/restful" {
         }
     }
 
-    package "repository" {
-        interface ProductRepository
-        ProductRepository <|-- Product
+    package "3. repository" {
+        interface ProductRepository {
+            +save(product: Product): Product 
+        }
     }
 
-    package "service" {
-        interface ProductService
+    package "4. service dan IMPL" {
+        interface ProductService {
+            +create(request: CreateProductRequest): ProductResponse
+        }
+        
         class ProductServiceImpl
         
         ProductService --> ProductRepository
@@ -49,16 +53,35 @@ package "src/main/kotlin/programmer/zaman/now/kotlin/restful" {
         ProductServiceImpl --> ProductService
     }
 
-    package "controller" {
+    package "5. controller" {
+        class ProductController {
+            +create(request: CreateProductRequest): WebResponse<ProductResponse>
+        }
+    }
 
-        class ProductController
-        
-        ProductController --> ProductService
+    package "6. database" {
+        class ProductTable {
+            +id: String (PK)
+            +name: String
+            +price: Long
+            +quantity: Int
+            +created_at: Timestamp
+            +updated_at: Timestamp
+        }
     }
 }
 
 ProductController -down-> ProductService : uses
 ProductService -down-> ProductRepository : uses
 ProductRepository -down-> Product : manages
+ProductRepository -down-> ProductTable : interacts
+
+ProductController --> CreateProductRequest : uses
+ProductController --> WebResponse : uses
+ProductController --> ProductResponse : uses
+ProductService --> CreateProductRequest : uses
+ProductService --> ProductResponse : uses
+ProductServiceImpl --> CreateProductRequest : uses
+ProductServiceImpl --> ProductResponse : uses
 
 @enduml

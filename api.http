@@ -1,0 +1,9 @@
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P002",
+    "name": "Akses Point",
+    "price": 200000,
+    "quantity": 22
+}

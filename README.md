@@ -8,11 +8,10 @@
 04-Desain-Layer-Aplikasi
 05-Membuat-Create-Product-API
     1. Entity
-    2. Repository
-    3. service
-    4. controller
-    5. model
-    6. IMPL
+    2. model
+    3. Repository
+    4. service dan IMPL
+    5. controller
 
 06-Membuat-Get-Product-API
 

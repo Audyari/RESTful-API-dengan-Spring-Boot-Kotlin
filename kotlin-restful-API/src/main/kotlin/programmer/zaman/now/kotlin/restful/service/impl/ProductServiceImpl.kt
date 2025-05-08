@@ -1,4 +1,3 @@
-
 package programmer.zaman.now.kotlin.restful.service.impl
 
 import org.springframework.stereotype.Service
@@ -10,19 +9,29 @@ import programmer.zaman.now.kotlin.restful.service.ProductService
 import java.util.*
 
 @Service
+// (1) Class utama yang mengimplementasikan ProductService
+//     - Menerima ProductRepository sebagai dependency
+//     - Mewarisi interface ProductService
 class ProductServiceImpl(val productRepository: ProductRepository) : ProductService {
    
+    // (2) Method untuk membuat produk baru
+    //     - Menerima CreateProductRequest dari controller
+    //     - Mengembalikan ProductResponse
     override fun create(createProductRequest: CreateProductRequest): ProductResponse {
+        // (3) Membuat objek Product baru dengan data dari request
         val product = Product(
             id = createProductRequest.id,
             name = createProductRequest.name,
             price = createProductRequest.price,
             quantity = createProductRequest.quantity,
-            createdAt = Date(),
-            updatedAt = null
+            createdAt = Date(),  // (4) Menambahkan timestamp saat dibuat
+            updatedAt = null     // (5) updatedAt null karena ini data baru
         )
+        
+        // (6) Menyimpan data ke database
         productRepository.save(product)
-
+        
+        // (7) Membuat dan mengembalikan ProductResponse
         return ProductResponse(
             id = product.id,
             name = product.name,
