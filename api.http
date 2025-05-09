@@ -1,9 +1,230 @@
 POST http://localhost:8080/api/products
 Content-Type: application/json
+Accept: application/json
 
 {
-    "id": "P002",
+    "id": "P003",
     "name": "Akses Point",
     "price": 200000,
     "quantity": 22
+}
+
+### Test case 1: Success (Semua data valid)
+POST http://localhost:8080/api/products
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": "P001",
+    "name": "Laptop",
+    "price": 10000000,
+    "quantity": 5
+}
+
+### Response (Success)
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "code": 200,
+    "status": "OK",
+    "data": {
+        "id": "P001",
+        "name": "Laptop",
+        "price": 10000000,
+        "quantity": 5,
+        "created_at": "timestamp",
+        "updated_at": null
+    }
+}
+
+### Test case 2: ID kosong
+POST http://localhost:8080/api/products
+Content-Type: application/json
+Accept: application/json
+
+{
+    "id": "",
+    "name": "Laptop",
+    "price": 10000000,
+    "quantity": 5
+}
+
+### Response (ID kosong)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Accept: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "id: ID tidak boleh kosong"
+}
+
+### Test case 3: ID terlalu pendek
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P1",
+    "name": "Laptop",
+    "price": 10000000,
+    "quantity": 5
+}
+
+### Response (ID terlalu pendek)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "id: ID harus antara 3-50 karakter"
+}
+
+### Test case 4: ID terlalu panjang
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P0012345678901234567890123456789012345678901234567890",
+    "name": "Laptop",
+    "price": 10000000,
+    "quantity": 5
+}
+
+### Response (ID terlalu panjang)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "id: ID harus antara 3-50 karakter"
+}
+
+### Test case 5: Nama kosong
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P001",
+    "name": "",
+    "price": 10000000,
+    "quantity": 5
+}
+
+### Response (Nama kosong)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "name: Nama tidak boleh kosong"
+}
+
+### Test case 6: Nama terlalu pendek
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P001",
+    "name": "L",
+    "price": 10000000,
+    "quantity": 5
+}
+
+### Response (Nama terlalu pendek)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "name: Nama harus antara 3-100 karakter"
+}
+
+### Test case 7: Nama terlalu panjang
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P001",
+    "name": "Laptop yang sangat sangat sangat sangat sangat sangat sangat sangat sangat panjang",
+    "price": 10000000,
+    "quantity": 5
+}
+
+### Response (Nama terlalu panjang)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "name: Nama harus antara 3-100 karakter"
+}
+
+### Test case 8: Harga negatif
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P001",
+    "name": "Laptop",
+    "price": -10000000,
+    "quantity": 5
+}
+
+### Response (Harga negatif)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "price: Harga minimal adalah 1"
+}
+
+### Test case 9: Harga 0
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P001",
+    "name": "Laptop",
+    "price": 0,
+    "quantity": 5
+}
+
+### Response (Harga 0)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "price: Harga minimal adalah 1"
+}
+
+### Test case 10: Jumlah negatif
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+    "id": "P001",
+    "name": "Laptop",
+    "price": 10000000,
+    "quantity": -5
+}
+
+### Response (Jumlah negatif)
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "code": 400,
+    "status": "BAD_REQUEST",
+    "data": "quantity: Jumlah minimal adalah 0"
 }

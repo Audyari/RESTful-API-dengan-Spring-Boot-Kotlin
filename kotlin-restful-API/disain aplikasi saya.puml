@@ -7,16 +7,29 @@ package "src/main/kotlin/programmer/zaman/now/kotlin/restful" {
             +name: String
             +price: Long
             +quantity: Int
-            +createdAt: Date
-            +updatedAt: Date?
+            +createdAt: Instant
+            +updatedAt: Instant?
+            
+            -- Validasi --
+            +id: @NotBlank, @Size(min=3, max=50)
+            +name: @NotBlank, @Size(min=3, max=100)
+            +price: @Min(1)
+            +quantity: @Min(0)
         }
     }
 
     package "2. model" {
         class CreateProductRequest {
+            +id: String
             +name: String
             +price: Long
             +quantity: Int
+            
+            -- Validasi --
+            +id: @NotBlank, @Size(min=3, max=50)
+            +name: @NotBlank, @Size(min=3, max=100)
+            +price: @Min(1)
+            +quantity: @Min(0)
         }
 
         class ProductResponse {
@@ -24,8 +37,8 @@ package "src/main/kotlin/programmer/zaman/now/kotlin/restful" {
             +name: String
             +price: Long
             +quantity: Int
-            +createdAt: Date
-            +updatedAt: Date?
+            +createdAt: Instant
+            +updatedAt: Instant?
         }
 
         class WebResponse<T> {
@@ -35,27 +48,49 @@ package "src/main/kotlin/programmer/zaman/now/kotlin/restful" {
         }
     }
 
-    package "3. repository" {
-        interface ProductRepository {
-            +save(product: Product): Product 
-        }
-    }
-
-    package "4. service dan IMPL" {
+    package "3. service" {
         interface ProductService {
             +create(request: CreateProductRequest): ProductResponse
         }
-        
-        class ProductServiceImpl
-        
-        ProductService --> ProductRepository
-        ProductService --> Product
-        ProductServiceImpl --> ProductService
+
+        class ProductServiceImpl {
+            +create(request: CreateProductRequest): ProductResponse
+            
+            -- Validasi --
+            +validateRequest(request: CreateProductRequest): Unit
+            +checkDuplicateId(id: String): Boolean
+            +createProduct(request: CreateProductRequest): Product
+        }
+    }
+
+    package "4. repository" {
+        interface ProductRepository {
+            +save(product: Product): Product 
+            +existsById(id: String): Boolean
+        }
+
+        class ProductRepositoryImpl {
+            +save(product: Product): Product 
+            +existsById(id: String): Boolean
+        }
     }
 
     package "5. controller" {
         class ProductController {
             +create(request: CreateProductRequest): WebResponse<ProductResponse>
+        }
+    }
+
+    package "6. validation" {
+        class ValidationUtil {
+            +validate(request: CreateProductRequest): Unit
+        }
+    }
+
+    package "7. error handling" {
+        class ErrorController {
+            +validationHandler(ex: ConstraintViolationException): ResponseEntity<WebResponse<String>>
+            +duplicateIdHandler(ex: RuntimeException): ResponseEntity<WebResponse<String>>
         }
     }
 
@@ -71,6 +106,7 @@ package "src/main/kotlin/programmer/zaman/now/kotlin/restful" {
     }
 }
 
+' Hubungan antar komponen
 ProductController -down-> ProductService : uses
 ProductService -down-> ProductRepository : uses
 ProductRepository -down-> Product : manages
@@ -83,5 +119,8 @@ ProductService --> CreateProductRequest : uses
 ProductService --> ProductResponse : uses
 ProductServiceImpl --> CreateProductRequest : uses
 ProductServiceImpl --> ProductResponse : uses
+ProductServiceImpl --> ValidationUtil : uses
+ProductController --> ErrorController : uses
+ProductServiceImpl --> ProductRepository : uses
 
 @enduml
